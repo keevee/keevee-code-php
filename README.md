@@ -3,6 +3,14 @@ mecode-php
 
 PHP lib for communicating with mecode app
 
+to add this to your project:
+----------------------------
+
+    git submodule add git@github.com:momolog/mecode-php.git mecode
+
+usage
+-----
+
 in header:
 
     <? meheader(); ?>
