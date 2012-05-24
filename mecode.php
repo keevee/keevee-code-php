@@ -116,6 +116,6 @@ function meproduct($p_id)
 function meproducts($products)
 {
     foreach ($products as $p) {
-        me_product($p);
+        meproduct($p);
     }
 }
