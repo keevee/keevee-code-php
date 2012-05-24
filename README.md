@@ -13,5 +13,7 @@ to show codes:
 
 to show product list:
 
-    <? meproducts($products) ?>
+    <? meproducts([100, 101, 102]) ?>
 
+where [100, 101, 102] is a list of numerical product id's
+defined in the mecode application.
