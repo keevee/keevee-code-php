@@ -93,19 +93,15 @@ function mecode()
 //products
 function meproduct($p_id)
 {
-    Global $url, $app;
-    $f = json_from("$app/products/$p_id/form?return_url=$url");
-
     echo  "
-          <form action='$f->action' method='post'>
-            $f->hidden_inputs
+          <form action='' class='me-product-form'>
             <table cellpadding='0' cellspacing='0' border='0'>
                 <tr><td class='textwhite' height='17' valign='bottom'>email address</td>
                 </tr>
                 <tr><td><input name='email' type='text' value='$email' size='25' maxlength='50' /></td>
                 </tr>
                 <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
-                        <input name='reeceive' type='submit' value='to Paypal...' /></td>
+                        <input name='reeceive' type='submit' value='Buy ...' /></td>
                 </tr>
             </table>
           </form>
