@@ -2,10 +2,16 @@
 include("utils.php");
 
 //config
-$url = 'http://reecode.eu';
+$client_url = 'http://reecode.eu';
 
-$app = 'http://mecode.momolog.info';
-# $app = 'http://localhost:3000';
+$me_url = 'http://mecode.momolog.info';
+# $me_url = 'http://localhost:3000';
+
+$products = array(
+    "2"
+//, "2"
+);
+
 
 //code
 $is_code_invalid = false;
@@ -15,44 +21,58 @@ _before();
 
 function _before()
 {
-    GLOBAL $is_code_invalid, $app, $code, $email;
+    GLOBAL $is_code_invalid, $me_url, $client_url, $code, $email;
     $email = $_REQUEST['email'];
-    if ($code = $_REQUEST['code']) {
-        $product = json_from("$app/codes/$code/use.json");
-        if ($product->reason == 'used' || $product->reason == 'unknown') {
-            $is_code_invalid = $product->reason;
-        }
-        else {
-            $code = '';
-            header("Location: $product->url");
-        }
-    }
+    if ($action = $_REQUEST['action']) {
 
-    if (isset($_REQUEST['invoice']) && isset($_REQUEST['sign'])) {
-        $invoice = urlencode($_REQUEST['invoice']);
-        $signature = urlencode($_REQUEST['sign']);
+        if ($action == 'a_recieve') {
+            if ($code = $_REQUEST['code']) {
+                $product = json_from("$me_url/codes/$code/use.json?email=$email");
+                if ($product->reason == 'used' || $product->reason == 'unknown') {
+                    $is_code_invalid = $product->reason;
+                }
+                else {
+                    $code = '';
+                    header("Location: $product->url");
+                }
+            }
+        }
 
-        $product = json_from("$app/sales/$invoice/$signature/checkout.json");
-        header("Location: $product->url");
+        elseif ($action == 'a_checkout') {
+            if (isset($_REQUEST['invoice']) && isset($_REQUEST['sign'])) {
+                $invoice = urlencode($_REQUEST['invoice']);
+                $signature = urlencode($_REQUEST['sign']);
+
+                $product = json_from("$me_url/sales/$invoice/$signature/checkout.json");
+                header("Location: $product->url");
+            }
+        }
+
+        elseif ($action == 'a_pay'){
+            $p_id = $_REQUEST['product'];
+            $f = json_from("$me_url/products/$p_id/form.json?return_url=$client_url&email=$email");
+
+            die("
+                  <form class='topaypal' action='$f->action'>
+                    $f->hidden_inputs
+                    <input name='reeceive' type='submit' value='to Paypal ...' />
+                    $me_url/products/$p_id/form.json?return_url=$client_url&email=$email
+                  </form>
+            ");
+        }
     }
 
 }
 
 function meheader()
 {
-    Global $app;
-    if (isset($_REQUEST['invoice']) && isset($_REQUEST['sign'])) {
-        $invoice = urlencode($_REQUEST['invoice']);
-        $signature = urlencode($_REQUEST['sign']);
-    }
-    if ($invoice = $_REQUEST['invoice'] && $signature == $_REQUEST['sign']) {
-        $code = json_from("$app/sales/$invoice/$signature/checkout.json");
-//        header("Location: $product->url");
-        echo ("<meta $app/sales/$invoice/$signature/checkout.json />");
-    }
     echo "
-        <script type='text/javascript' src='mecode/jquery.js'></script>
+        <script type='text/javascript' src='mecode/vars.js.php'></script>
+        <script type='text/javascript' src='mecode/vendor.js'></script>
         <script type='text/javascript' src='mecode/mecode.js'></script>
+
+        <link   type='text/css'       href='mecode/boxy/boxy.css' rel='stylesheet'  />
+        <link   type='text/css'       href='mecode/mecode.css' rel='stylesheet'  />
     ";
 }
 
@@ -72,10 +92,13 @@ function mecode()
     echo  "
           <form action='' method='post'>
               <table cellpadding='0' cellspacing='0' border='0'>
-                    <tr><td class='textwhite'>reesponse codeffffffff</td>
+                    <tr><td class='textwhite'>reesponse code</td>
                     </tr>
-                    <tr><td><input name='code' class='reesponse code' type='text' value='$code' size='11' maxlength='50' /></td>
-                    </tr>
+                    <tr><td>
+                        <input name='code' class='reesponse code' type='text' value='$code' size='11' maxlength='50' />
+                        <input name='action' type='hidden' value='a_recieve' size='11' maxlength='50' />
+
+                    </td> </tr>
                     <tr><td class='textwhite' height='17' valign='bottom'>email address</td>
                     </tr>
                     <tr><td><input name='email' type='text' value='$email' size='25' maxlength='50' /></td>
@@ -94,14 +117,17 @@ function mecode()
 function meproduct($p_id)
 {
     echo  "
-          <form action='' class='me-product-form'>
+          <form class='me-product'>
             <table cellpadding='0' cellspacing='0' border='0'>
                 <tr><td class='textwhite' height='17' valign='bottom'>email address</td>
                 </tr>
-                <tr><td><input name='email' type='text' value='$email' size='25' maxlength='50' /></td>
-                </tr>
+                <tr><td>
+                    <input name='action' type='hidden' value='a_pay' />
+                    <input name='product' type='hidden' value='$p_id'/>
+                    <input name='email' type='text' value='$email' size='25' maxlength='50' />
+               </td> </tr>
                 <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
-                        <input name='reeceive' type='submit' value='Buy ...' /></td>
+                        <input name='reeceive' type='submit' value='Pay ...' /></td>
                 </tr>
             </table>
           </form>
@@ -112,6 +138,8 @@ function meproduct($p_id)
 function meproducts($products)
 {
     foreach ($products as $p) {
-        meproduct($p);
+        me_product($p);
     }
 }
+
+?>
