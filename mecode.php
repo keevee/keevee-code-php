@@ -6,8 +6,8 @@
   function config($key){
     $config = array(
       'client_url'  => 'http://reecode.eu',
-      'me_url'      => 'http://mecode.momolog.info'
-      # 'me_url'    => 'http://localhost:3000'
+      'mecode_url'  => 'http://mecode.momolog.info'
+      # 'mecode_url'  => 'http://localhost:3000'
     );
     return @$config[$key];
   }
@@ -22,11 +22,17 @@
 
   function _init() {
     GLOBAL $is_code_invalid, $code, $email;
-    $email = $_REQUEST['email'];
-    if ($action = $_REQUEST['action']) {
-      if ($action == 'a_recieve') {
-        if ($code = $_REQUEST['code']) {
-          $product = json_from("{config('me_url')}/codes/$code/use.json?email=$email");
+    $email    = @$_REQUEST['email'];
+    $action   = @$_REQUEST['action'];
+    $code     = @$_REQUEST['code'];
+    $invoice  = @$_REQUEST['invoice'];
+    $sign     = @$_REQUEST['sign'];
+    $p_id     = @$_REQUEST['product'];
+
+    switch($action) {
+      case 'a_recieve':
+        if ($code) {
+          $product = json_from(config('mecode_url')."/codes/$code/use.json?email=$email");
           if ($product->reason == 'used' || $product->reason == 'unknown') {
             $is_code_invalid = $product->reason;
           } else {
@@ -34,26 +40,24 @@
             header("Location: $product->url");
           }
         }
-      } elseif ($action == 'a_checkout') {
-        if (isset($_REQUEST['invoice']) && isset($_REQUEST['sign'])) {
-          $invoice = urlencode($_REQUEST['invoice']);
-          $signature = urlencode($_REQUEST['sign']);
+      case 'a_checkout':
+        if ($invoice && $sign) {
+          $invoice  = urlencode($invoice);
+          $sign     = urlencode($sign);
 
-          $product = json_from(config('me_url')."/sales/$invoice/$signature/checkout.json");
+          $product = json_from(config('mecode_url')."/sales/$invoice/$sign/checkout.json");
           header("Location: $product->url");
         }
-      } elseif ($action == 'a_pay'){
-        $p_id = $_REQUEST['product'];
-        $f = json_from(config('me_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
+      case 'a_pay':
+        $f = json_from(config('mecode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
 
         die("
           <form class='topaypal' action='$f->action'>
             $f->hidden_inputs
             <input name='reeceive' type='submit' value='to Paypal ...' />
-            ".config('me_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email
+            ".config('mecode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email
           </form>
         ");
-      }
     }
   }
 
