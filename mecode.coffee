@@ -15,7 +15,7 @@ $ ->
           modal: true
           closeText: 'x'
           fixed: true
-
+        $('.topaypal').submit()
     return false
 
   return true

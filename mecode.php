@@ -5,7 +5,7 @@
   # FIXME: config should go to config.yaml
   function config($key){
     $config = array(
-      'client_url'  => 'http://reecode.eu',
+      'client_url'  => 'http://reecode.eu/index.php',
       'mecode_url'  => 'http://mecode.momolog.info'
       # 'mecode_url'  => 'http://localhost:3000'
     );
@@ -29,6 +29,16 @@
     $sign     = @$_REQUEST['sign'];
     $p_id     = @$_REQUEST['product'];
 
+
+    if ($invoice && $sign) {
+      $invoice  = urlencode($invoice);
+      $sign     = urlencode($sign);
+
+      $product = json_from(config('mecode_url')."/sales/$invoice/$sign/checkout.json");
+      header("Location: $product->url");
+      break;
+    }
+
     switch($action) {
       case 'a_recieve':
         if ($code) {
@@ -39,14 +49,7 @@
             $code = '';
             header("Location: $product->url");
           }
-        }
-      case 'a_checkout':
-        if ($invoice && $sign) {
-          $invoice  = urlencode($invoice);
-          $sign     = urlencode($sign);
-
-          $product = json_from(config('mecode_url')."/sales/$invoice/$sign/checkout.json");
-          header("Location: $product->url");
+          break;
         }
       case 'a_pay':
         $f = json_from(config('mecode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
@@ -55,14 +58,12 @@
           <form class='topaypal' action='$f->action'>
             $f->hidden_inputs
             <input name='reeceive' type='submit' value='to Paypal ...' />
-            ".config('mecode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email
           </form>
         ");
     }
   }
 
   function meheader() { ?>
-    <script type='text/javascript' src='mecode/vars.js.php'></script>
     <script type='text/javascript' src='mecode/vendor.js'></script>
     <script type='text/javascript' src='mecode/mecode.js'></script>
 
