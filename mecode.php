@@ -61,16 +61,14 @@
     }
   }
 
-  function meheader() {
-    echo "
-      <script type='text/javascript' src='mecode/vars.js.php'></script>
-      <script type='text/javascript' src='mecode/vendor.js'></script>
-      <script type='text/javascript' src='mecode/mecode.js'></script>
+  function meheader() { ?>
+    <script type='text/javascript' src='mecode/vars.js.php'></script>
+    <script type='text/javascript' src='mecode/vendor.js'></script>
+    <script type='text/javascript' src='mecode/mecode.js'></script>
 
-      <link   type='text/css'       href='mecode/boxy/boxy.css' rel='stylesheet'  />
-      <link   type='text/css'       href='mecode/mecode.css' rel='stylesheet'  />
-    ";
-  }
+    <link type='text/css' href='mecode/boxy/boxy.css' rel='stylesheet' />
+    <link type='text/css' href='mecode/mecode.css'    rel='stylesheet' />
+  <?php }
 
   # codes
   function mecode() {
