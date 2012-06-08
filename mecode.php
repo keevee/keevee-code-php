@@ -57,7 +57,7 @@
         die("
           <form class='topaypal' action='$f->action'>
             $f->hidden_inputs
-            <input name='reeceive' type='submit' value='to Paypal ...' />
+            <input name='reeceive' type='submit' value='Going to Paypal ...' />
           </form>
         ");
     }
@@ -94,10 +94,10 @@
             <input name='code' class='reesponse code' type='text' value='$code' size='11' maxlength='50' />
             <input name='action' type='hidden' value='a_recieve' size='11' maxlength='50' />
           </td> </tr>
-          <tr><td class='textwhite' height='17' valign='bottom'>email address</td>
+          <!--tr><td class='textwhite' height='17' valign='bottom'>email address</td>
           </tr>
           <tr><td><input name='email' type='text' value='$email' size='25' maxlength='50' /></td>
-          </tr>
+          </tr-->
           <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
                   <input name='reeceive' type='submit' value='reeceive...!' /></td>
           </tr>
@@ -110,14 +110,14 @@
   # products
   function meproduct($p_id) {
     echo  "
-      <form class='me-product'>
+      <form class='me-product' method='get'>
         <table cellpadding='0' cellspacing='0' border='0'>
-          <tr><td class='textwhite' height='17' valign='bottom'>email address</td>
-          </tr>
+          <!--tr><td class='textwhite' height='17' valign='bottom'>email address</td>
+          </tr-->
           <tr><td>
             <input name='action' type='hidden' value='a_pay' />
             <input name='product' type='hidden' value='$p_id'/>
-            <input name='email' type='text' value='$email' size='25' maxlength='50' />
+            <!--input name='email' type='text' value='$email' size='25' maxlength='50' /-->
           </td> </tr>
           <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
             <input name='reeceive' type='submit' value='Pay ...' /></td>
