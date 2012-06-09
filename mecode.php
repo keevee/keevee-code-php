@@ -6,8 +6,8 @@
   function config($key){
     $config = array(
       'client_url'  => 'http://reecode.eu/index.php',
-      'mecode_url'  => 'http://mecode.momolog.info'
-      # 'mecode_url'  => 'http://localhost:3000'
+      'kvcode_url'  => 'http://keevee-code.momolog.info'
+      # 'kvcode_url'  => 'http://localhost:3000'
     );
     return @$config[$key];
   }
@@ -34,7 +34,7 @@
       $invoice  = urlencode($invoice);
       $sign     = urlencode($sign);
 
-      $product = json_from(config('mecode_url')."/sales/$invoice/$sign/checkout.json");
+      $product = json_from(config('kvcode_url')."/sales/$invoice/$sign/checkout.json");
       header("Location: $product->url");
       break;
     }
@@ -42,7 +42,7 @@
     switch($action) {
       case 'a_recieve':
         if ($code) {
-          $product = json_from(config('mecode_url')."/codes/$code/use.json?email=$email");
+          $product = json_from(config('kvcode_url')."/codes/$code/use.json?email=$email");
           if ($product->reason == 'used' || $product->reason == 'unknown') {
             $is_code_invalid = $product->reason;
           } else {
@@ -52,7 +52,7 @@
           break;
         }
       case 'a_pay':
-        $f = json_from(config('mecode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
+        $f = json_from(config('kvcode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
 
         die("
           <form class='topaypal' action='$f->action'>
