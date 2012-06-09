@@ -1,12 +1,12 @@
-mecode-php
+keevee-code-php
 ==========
 
-PHP lib for communicating with mecode app
+PHP lib for communicating with keevee-code app
 
 to add this to your project:
 ----------------------------
 
-    git submodule add git@github.com:momolog/mecode-php.git mecode
+    git submodule add git@github.com:keevee/keevee-code-php.git keevee-code
 
 
 usage
