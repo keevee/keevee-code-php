@@ -51,15 +51,6 @@
           }
           break;
         }
-      case 'a_pay':
-        $f = json_from(config('kvcode_url')."/products/$p_id/form.json?return_url=".config('client_url')."&email=$email");
-
-        die("
-          <form class='topaypal' action='$f->action'>
-            $f->hidden_inputs
-            <input name='reeceive' type='submit' value='Going to Paypal ...' />
-          </form>
-        ");
     }
   }
 
@@ -109,20 +100,12 @@
 
   # products
   function meproduct($p_id) {
-    echo  "
-      <form class='me-product' method='get'>
-        <table cellpadding='0' cellspacing='0' border='0'>
-          <!--tr><td class='textwhite' height='17' valign='bottom'>email address</td>
-          </tr-->
-          <tr><td>
-            <input name='action' type='hidden' value='a_pay' />
-            <input name='product' type='hidden' value='$p_id'/>
-            <!--input name='email' type='text' value='$email' size='25' maxlength='50' /-->
-          </td> </tr>
-          <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
-            <input name='reeceive' type='submit' value='Pay ...' /></td>
-          </tr>
-        </table>
+    $f = json_from(config('kvcode_url')."/products/$p_id/form.json?return_url=".config('client_url'));
+
+    echo "
+      <form class='to-paypal' action='$f->action'>
+        $f->hidden_inputs
+        <input name='reeceive' type='submit' value='Reecieve ...' />
       </form>
     ";
   };
