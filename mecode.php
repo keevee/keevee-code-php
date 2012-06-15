@@ -17,26 +17,27 @@
   $is_code_invalid  = false;
   $code             = '';
   $email            = '';
+  $download_url     = '';
 
   _init();
 
   function _init() {
-    GLOBAL $is_code_invalid, $code, $email;
+    GLOBAL $is_code_invalid, $code, $email, $download_url;
     $email    = @$_REQUEST['email'];
     $action   = @$_REQUEST['action'];
     $code     = @$_REQUEST['code'];
     $invoice  = @$_REQUEST['invoice'];
     $sign     = @$_REQUEST['sign'];
-    $p_id     = @$_REQUEST['product'];
-
 
     if ($invoice && $sign) {
       $invoice  = urlencode($invoice);
       $sign     = urlencode($sign);
 
       $product = json_from(config('kvcode_url')."/sales/$invoice/$sign/checkout.json");
-      header("Location: $product->url");
-      break;
+      //header("Location: $product->url");
+      $download_url = $product->url;
+
+      return;
     }
 
     switch($action) {
@@ -60,7 +61,16 @@
 
     <link type='text/css' href='mecode/boxy/boxy.css' rel='stylesheet' />
     <link type='text/css' href='mecode/mecode.css'    rel='stylesheet' />
-  <?php }
+    <?php
+      global $download_url;
+      if ($download_url) {
+        echo "
+          <script type='text/javascript'>
+            window.downloadUrl = '$download_url';
+          </script>
+        ";
+      }
+  }
 
   # codes
   function mecode() {
@@ -85,10 +95,6 @@
             <input name='code' class='reesponse code' type='text' value='$code' size='11' maxlength='50' />
             <input name='action' type='hidden' value='a_recieve' size='11' maxlength='50' />
           </td> </tr>
-          <!--tr><td class='textwhite' height='17' valign='bottom'>email address</td>
-          </tr>
-          <tr><td><input name='email' type='text' value='$email' size='25' maxlength='50' /></td>
-          </tr-->
           <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
                   <input name='reeceive' type='submit' value='reeceive...!' /></td>
           </tr>
