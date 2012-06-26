@@ -6,6 +6,7 @@
   function config($key){
     $config = array(
       'client_url'  => 'http://reecode.eu/index.php',
+      # 'client_url'  => 'http://reecode.local/index.php',
       'kvcode_url'  => 'http://keevee-code.momolog.info'
       # 'kvcode_url'  => 'http://localhost:3000'
     );
@@ -80,8 +81,8 @@
 
     if ($is_code_invalid) {
       $err_msg = array(
-        'used' => 'schade! somebody ate the cake before!',
-        'unknown' => "I don't know about this code. sorry!"
+        'used'    => 'Schade! Somebody ate the cake before!',
+        'unknown' => "I don't know about this code. Sorry!"
       );
       echo "<label class='err'>$err_msg[$is_code_invalid]</label>";
     }
