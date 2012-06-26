@@ -90,14 +90,18 @@
     echo  "
       <form action='' method='post'>
         <table cellpadding='0' cellspacing='0' border='0'>
-          <tr><td class='textwhite'>reesponse code</td>
-          </tr>
+          <tr><td class='textwhite'>reesponse code</td></tr>
           <tr><td>
-            <input name='code' class='reesponse code' type='text' value='$code' size='11' maxlength='50' />
-            <input name='action' type='hidden' value='a_recieve' size='11' maxlength='50' />
-          </td> </tr>
-          <tr><td align='right'><img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
-                  <input name='reeceive' type='submit' value='reeceive...!' /></td>
+            <input name='code'                  value='$code'     size='11' maxlength='50' class='reesponse code' />
+            <input name='action'  type='hidden' value='a_recieve' size='11' maxlength='50' />
+          </td></tr>
+          <tr><td class='textwhite'>email</td></tr>
+          <tr><td><input name='email'                 value='$email'    size='25' maxlength='50' /></td></tr>
+          <tr>
+            <td align='right'>
+              <img src='img/1x1_trans.gif' width='1' height='5' alt='' border='0' /><br />
+              <input name='reeceive' type='submit' value='reeceive...!' />
+            </td>
           </tr>
         </table>
       </form>
