@@ -74,16 +74,12 @@
 
   # codes
   function KV_code() {
-    GLOBAL $is_code_invalid, $code;
+    list($code, $err) = KV_code_vars();
 
     echo "<div class='KV-code'>";
 
-    if ($is_code_invalid) {
-      $err_msg = array(
-        'used'    => 'Schade! Somebody ate the cake before!',
-        'unknown' => "I don't know about this code. Sorry!"
-      );
-      echo "<label class='err'>$err_msg[$is_code_invalid]</label>";
+    if ($err) {
+      echo "<label class='err'>$err</label>";
     }
 
     echo  "
@@ -103,21 +99,13 @@
     echo "</div>";
   }
 
-  function KV_code_vars(){
-
-  }
-
-  function KV_product_vars(){
-
-  }
-
   # products
   function KV_product($p_id) {
-    $f = json_from(config('kvcode_url')."/products/$p_id/form.json?return_url=".config('client_url'));
+    list($action,$hidden_inputs) = KV_product_vars($p_id);
 
     echo "
-      <form class='to-paypal' action='$f->action'>
-        $f->hidden_inputs
+      <form class='to-paypal' action='$action'>
+        $hidden_inputs
         <input name='reeceive' type='submit' value='Reecieve ...' />
       </form>
     ";
@@ -125,4 +113,25 @@
 
   function KV_products($products) {
     foreach ($products as $p) { meproduct($p); }
+  }
+
+
+  function KV_code_vars(){
+    GLOBAL $is_code_invalid, $code;
+    $err = "";
+    if ($is_code_invalid) {
+      $err_msg = array(
+        'used'    => 'Schade! Somebody ate the cake before!',
+        'unknown' => "I don't know about this code. Sorry!"
+      );
+      $err = $err_msg[$is_code_invalid];
+    }
+
+    return array($code, $err);
+  }
+
+  function KV_product_vars($p_id){
+    $f = json_from(config('KV_code_url')."/products/$p_id/form.json?return_url=".config('client_url'));
+
+    return array($f->action, $f->hidden_inputs);
   }
