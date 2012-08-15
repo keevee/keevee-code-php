@@ -1,13 +1,18 @@
 <?php
 
-echo getcwd();
 include("kv-utils.php");
-include('kv-config.php');
+include('mecode/lib/spyc.php');
 
 _init();
 
 function _init() {
-  GLOBAL $is_code_invalid, $code, $email, $download_url;
+  GLOBAL $is_code_invalid, $code, $email, $download_url, $config;
+
+  $default_config = Spyc::YAMLLoad('mecode/kv/default_config.yaml');
+  $project_config = Spyc::YAMLLoad('config.yaml');
+
+  $config         = array_merge($default_config, $project_config);
+
   $is_code_invalid  = false;
   $code             = '';
   $email            = '';
@@ -23,17 +28,14 @@ function _init() {
     $invoice  = urlencode($invoice);
     $sign     = urlencode($sign);
 
-    $product = json_from(config('KV_code_url')."/sales/$invoice/$sign/checkout.json");
-    //header("Location: $product->url");
+    $product = json_from($config[KV_code_url]."/sales/$invoice/$sign/checkout.json");
     $download_url = $product->url;
-
-    return;
   }
 
   switch($action) {
     case 'a_recieve':
       if ($code) {
-        $product = json_from(config('KV_code_url')."/codes/$code/use.json?email=$email");
+        $product = json_from($config[KV_code_url]."/codes/$code/use.json?email=$email");
         if ($product->reason == 'used' || $product->reason == 'unknown') {
           $is_code_invalid = $product->reason;
         } else {
@@ -46,11 +48,11 @@ function _init() {
 }
 
 function KV_header() { ?>
-  <script type='text/javascript' src='mecode/vendor.js'></script>
-  <script type='text/javascript' src='mecode/kv-code.js'></script>
+  <script type='text/javascript' src='mecode/lib/vendor.js'></script>
+  <script type='text/javascript' src='mecode/kv/kv-code.js'></script>
 
-  <link type='text/css' href='mecode/boxy/boxy.css' rel='stylesheet' />
-  <link type='text/css' href='mecode/kv-code.css'    rel='stylesheet' />
+  <link type='text/css' href='mecode/lib/boxy/boxy.css' rel='stylesheet' />
+  <link type='text/css' href='mecode/kv/kv-code.css'    rel='stylesheet' />
   <?php
     global $download_url;
     if ($download_url) {
@@ -89,7 +91,7 @@ function KV_code_vars(){
 }
 
 function KV_product_vars($p_id){
-  $f = json_from(config('KV_code_url')."/products/$p_id/form.json?return_url=".config('client_url'));
-
+  GLOBAL $config;
+  $f = json_from($config[KV_code_url]."/products/$p_id/form.json?return_url=".$config[client_url]);
   return array($f->action, $f->hidden_inputs);
 }
